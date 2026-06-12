@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud File Host</title>
+
+    <!-- Bootstrap 5 + Icons (same look as the backend UI) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body class="bg-body-tertiary min-vh-100">
+
+    <!-- Navbar -->
+    <nav class="navbar bg-white border-bottom shadow-sm">
+        <div class="container">
+            <span class="navbar-brand fw-semibold d-flex align-items-center gap-2">
+                <i class="bi bi-cloud-arrow-up-fill text-primary fs-4"></i>
+                Cloud File Host
+            </span>
+            <div class="d-flex align-items-center gap-3">
+                <!-- Backend status indicator -->
+                <span id="statusBadge" class="badge rounded-pill bg-secondary">
+                    <i class="bi bi-hourglass-split me-1"></i>Checking…
+                </span>
+                <!-- Shown only when logged in -->
+                <span id="userInfo" class="navbar-text small text-secondary d-none"></span>
+                <button id="logoutBtn" class="btn btn-sm btn-outline-secondary d-none">
+                    <i class="bi bi-box-arrow-right me-1"></i>Logout
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-4" style="max-width: 900px;">
+
+        <!-- Message area (success / error banners) -->
+        <div id="message"></div>
+
+        <!-- ── Landing + login (shown when logged out) ───────────── -->
+        <section id="loginView">
+            <div class="mb-4">
+                <h1 class="h3 fw-semibold mb-1">Cloud File Host</h1>
+                <p class="text-secondary mb-0">
+                    A small file-hosting app. The backend runs on <strong>AWS EC2</strong>,
+                    stores files in <strong>Amazon S3</strong>, and is secured with login and a
+                    limited number of user accounts. This frontend is hosted on Vercel.
+                </p>
+            </div>
+
+            <!-- Offline notice (shown if the backend can't be reached) -->
+            <div id="offlineNotice" class="alert alert-warning d-none" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                Backend currently offline (EC2 stopped). Demo available on request.
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-12 col-md-7 col-lg-5">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <h2 class="h5 fw-semibold mb-3">
+                                <i class="bi bi-shield-lock text-primary me-2"></i>Sign in
+                            </h2>
+                            <form id="loginForm">
+                                <div class="mb-3">
+                                    <label class="form-label" for="email">Email</label>
+                                    <input type="email" id="email" class="form-control" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label" for="password">Password</label>
+                                    <input type="password" id="password" class="form-control" required>
+                                </div>
+                                <button type="submit" id="loginSubmit" class="btn btn-primary w-100">
+                                    <i class="bi bi-box-arrow-in-right me-1"></i>Sign in
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── Dashboard (shown when logged in) ──────────────────── -->
+        <section id="dashboardView" class="d-none">
+
+            <div class="mb-4">
+                <h1 class="h3 fw-semibold mb-1">Dashboard</h1>
+                <p class="text-secondary mb-0">Upload, download, and manage files in your S3 bucket.</p>
+            </div>
+
+            <!-- Upload card -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h2 class="h5 fw-semibold mb-3">
+                        <i class="bi bi-cloud-arrow-up text-primary me-2"></i>Upload a file
+                    </h2>
+                    <form id="uploadForm">
+                        <input type="file" id="fileInput" class="form-control mb-2" required>
+                        <div class="form-text mb-3">
+                            Allowed: txt, pdf, png, jpg, jpeg, zip · Max 20 MB per file
+                        </div>
+                        <button type="submit" id="uploadSubmit" class="btn btn-primary px-4">
+                            <i class="bi bi-upload me-1"></i>Upload file
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- File list card -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h2 class="h5 fw-semibold mb-0">
+                            <i class="bi bi-folder2-open text-primary me-2"></i>Files in your bucket
+                        </h2>
+                        <span id="fileCount" class="badge bg-primary-subtle text-primary rounded-pill d-none"></span>
+                    </div>
+                    <div id="fileListArea">
+                        <!-- Filled in by app.js -->
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

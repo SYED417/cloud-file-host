@@ -1,0 +1,5 @@
+# Nothing to build for a static site, but keep junk out of the repo.
+.DS_Store
+Thumbs.db
+node_modules/
+.vercel

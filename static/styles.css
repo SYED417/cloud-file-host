@@ -1,0 +1,42 @@
+/* ── Cloud File Host – custom styles ─────────────────────────────────────── */
+
+body {
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ── Cards ───────────────────────────────────────────────────────────────── */
+.card {
+    border-radius: 0.75rem;
+}
+
+/* ── Drag-and-drop upload zone ───────────────────────────────────────────── */
+.dropzone {
+    border: 2px dashed var(--bs-border-color);
+    background-color: var(--bs-body-bg);
+    cursor: pointer;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+    min-height: 140px;
+}
+
+.dropzone:hover,
+.dropzone--active {
+    border-color: var(--bs-primary);
+    background-color: rgba(13, 110, 253, 0.04);
+}
+
+/* ── Table tweaks ────────────────────────────────────────────────────────── */
+.table > :not(caption) > * > * {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+}
+
+/* ── Empty state ─────────────────────────────────────────────────────────── */
+.empty-state {
+    border: 2px dashed var(--bs-border-color);
+    border-radius: 0.75rem;
+}
+
+/* ── Navbar brand subtle underline on hover ──────────────────────────────── */
+.navbar-brand:hover {
+    opacity: 0.85;
+}

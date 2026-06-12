@@ -1,0 +1,4 @@
+/* A few touches on top of Bootstrap. */
+body { -webkit-font-smoothing: antialiased; }
+.card { border-radius: 0.75rem; }
+.table > :not(caption) > * > * { padding-top: 0.75rem; padding-bottom: 0.75rem; }

@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# Virtual environment — never commit this
+venv/
+.venv/
+env/
+
+# Environment variables — NEVER commit real secrets
+.env
+
+# SQLite database — regenerated automatically on first run
+users.db
+
+# Editor / OS junk
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Vercel
+.vercel
