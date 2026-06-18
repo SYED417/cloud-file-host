@@ -80,7 +80,26 @@ BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
 app.secret_key = os.environ["FLASK_SECRET_KEY"]
 app.config["MAX_CONTENT_LENGTH"] = MAX_UPLOAD_BYTES
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(BASE_DIR, "users.db")
+
+# ---------------------------------------------------------------------------
+# Database selection
+# ---------------------------------------------------------------------------
+# If DATABASE_URL is set (e.g. Render's managed PostgreSQL), use it so data
+# PERSISTS across restarts and redeploys. Otherwise fall back to a local
+# SQLite file for development.
+#
+# Render/Heroku hand out URLs starting with "postgres://", but SQLAlchemy + the
+# modern driver expect "postgresql://", so we normalise the scheme.
+_database_url = os.environ.get("DATABASE_URL", "").strip()
+if _database_url:
+    if _database_url.startswith("postgres://"):
+        _database_url = _database_url.replace("postgres://", "postgresql://", 1)
+    app.config["SQLALCHEMY_DATABASE_URI"] = _database_url
+    # Recycle connections so the managed DB doesn't drop idle ones on us.
+    app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {"pool_pre_ping": True, "pool_recycle": 300}
+else:
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(BASE_DIR, "users.db")
+
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 # Harden the session cookie (defense in depth for a same-origin app).
