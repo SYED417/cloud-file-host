@@ -1,42 +1,126 @@
-/* ── Cloud File Host – custom styles ─────────────────────────────────────── */
+/* ===========================================================================
+   Cloud File Host - theme
+   ---------------------------------------------------------------------------
+   Author:        SYED SULAIMAN USMAN
+   Last modified: April 18, 2026
+
+   A modern, secure-looking palette built around INDIGO and NAVY BLUE,
+   layered on top of Bootstrap 5.
+   =========================================================================== */
+
+:root {
+    --indigo: #4f46e5;        /* primary actions */
+    --indigo-dark: #4338ca;   /* hover */
+    --indigo-soft: #eef2ff;   /* subtle backgrounds */
+    --navy: #0f172a;          /* navbar / headings */
+    --navy-2: #1e293b;        /* secondary navy */
+    --ink: #1e293b;
+    --muted: #64748b;
+}
 
 body {
+    background-color: #f5f6fb;
+    color: var(--ink);
     -webkit-font-smoothing: antialiased;
 }
 
-/* ── Cards ───────────────────────────────────────────────────────────────── */
+/* ── Navbar: deep navy bar ─────────────────────────────────────────────── */
+.navbar {
+    background-color: var(--navy) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+.navbar .navbar-brand,
+.navbar .navbar-text,
+.navbar .navbar-brand .bi {
+    color: #ffffff !important;
+}
+.navbar .navbar-brand .text-primary,
+.navbar .text-primary {
+    color: #a5b4fc !important; /* indigo-200 accent on dark */
+}
+
+/* ── Headings ──────────────────────────────────────────────────────────── */
+h1, h2, h3, .fw-semibold {
+    color: var(--navy);
+}
+
+/* ── Cards ─────────────────────────────────────────────────────────────── */
 .card {
-    border-radius: 0.75rem;
+    border-radius: 0.85rem;
+    border: 1px solid #e6e8f0;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06) !important;
 }
 
-/* ── Drag-and-drop upload zone ───────────────────────────────────────────── */
+/* ── Primary buttons -> indigo ─────────────────────────────────────────── */
+.btn-primary {
+    --bs-btn-bg: var(--indigo);
+    --bs-btn-border-color: var(--indigo);
+    --bs-btn-hover-bg: var(--indigo-dark);
+    --bs-btn-hover-border-color: var(--indigo-dark);
+    --bs-btn-active-bg: var(--indigo-dark);
+    --bs-btn-active-border-color: var(--indigo-dark);
+    --bs-btn-focus-shadow-rgb: 79, 70, 229;
+}
+.btn-outline-primary {
+    --bs-btn-color: var(--indigo);
+    --bs-btn-border-color: var(--indigo);
+    --bs-btn-hover-bg: var(--indigo);
+    --bs-btn-hover-border-color: var(--indigo);
+    --bs-btn-active-bg: var(--indigo-dark);
+}
+
+/* ── Accent helpers ────────────────────────────────────────────────────── */
+.text-primary { color: var(--indigo) !important; }
+.bg-primary-subtle { background-color: var(--indigo-soft) !important; }
+.badge.text-primary { color: var(--indigo) !important; }
+a { color: var(--indigo); }
+a:hover { color: var(--indigo-dark); }
+
+/* ── Drag-and-drop upload zone ─────────────────────────────────────────── */
 .dropzone {
-    border: 2px dashed var(--bs-border-color);
-    background-color: var(--bs-body-bg);
+    border: 2px dashed #c7cbe0;
+    background-color: #fafbff;
     cursor: pointer;
+    min-height: 150px;
     transition: border-color 0.15s ease, background-color 0.15s ease;
-    min-height: 140px;
 }
-
 .dropzone:hover,
 .dropzone--active {
-    border-color: var(--bs-primary);
-    background-color: rgba(13, 110, 253, 0.04);
+    border-color: var(--indigo);
+    background-color: var(--indigo-soft);
 }
 
-/* ── Table tweaks ────────────────────────────────────────────────────────── */
+/* ── Tables ────────────────────────────────────────────────────────────── */
 .table > :not(caption) > * > * {
-    padding-top: 0.75rem;
-    padding-bottom: 0.75rem;
+    padding-top: 0.8rem;
+    padding-bottom: 0.8rem;
+}
+.table-light th {
+    background-color: var(--indigo-soft);
+    color: var(--navy);
 }
 
-/* ── Empty state ─────────────────────────────────────────────────────────── */
+/* ── Empty state ───────────────────────────────────────────────────────── */
 .empty-state {
-    border: 2px dashed var(--bs-border-color);
-    border-radius: 0.75rem;
+    border: 2px dashed #d7dbea;
+    border-radius: 0.85rem;
+    color: var(--muted);
 }
 
-/* ── Navbar brand subtle underline on hover ──────────────────────────────── */
-.navbar-brand:hover {
-    opacity: 0.85;
+/* ── Inline upload messages (set by script.js) ─────────────────────────── */
+.app-alert {
+    border-radius: 0.6rem;
+    padding: 0.7rem 1rem;
+    margin-top: 0.75rem;
+    font-size: 0.95rem;
+}
+.app-alert--success {
+    background-color: #e7f8ee;
+    color: #146c43;
+    border: 1px solid #a3e0bf;
+}
+.app-alert--error {
+    background-color: #fdeaea;
+    color: #b02a37;
+    border: 1px solid #f2b8bd;
 }

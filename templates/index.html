@@ -57,6 +57,9 @@
             <button type="submit" class="btn btn-primary px-4" id="uploadBtn">
                 <i class="bi bi-upload me-1"></i>Upload file
             </button>
+
+            <!-- Upload status messages (populated by script.js) -->
+            <div id="uploadMessage"></div>
         </form>
     </div>
 </div>
@@ -139,46 +142,6 @@
 
 
 {% block scripts %}
-<script>
-    // Update the "No file chosen" label when the user picks a file.
-    const input = document.getElementById('fileInput');
-    const fileChosen = document.getElementById('fileChosen');
-
-    input.addEventListener('change', () => {
-        fileChosen.textContent = input.files.length
-            ? input.files[0].name
-            : 'No file chosen';
-    });
-
-    // Drag-and-drop visual feedback on the drop zone label.
-    const dropLabel = document.getElementById('dropLabel');
-
-    ['dragenter', 'dragover'].forEach(evt =>
-        dropLabel.addEventListener(evt, e => {
-            e.preventDefault();
-            dropLabel.classList.add('dropzone--active');
-        })
-    );
-
-    ['dragleave', 'drop'].forEach(evt =>
-        dropLabel.addEventListener(evt, () =>
-            dropLabel.classList.remove('dropzone--active')
-        )
-    );
-
-    dropLabel.addEventListener('drop', e => {
-        e.preventDefault();
-        if (e.dataTransfer.files.length) {
-            input.files = e.dataTransfer.files;
-            fileChosen.textContent = e.dataTransfer.files[0].name;
-        }
-    });
-
-    // Disable the upload button after submit to prevent double-clicks.
-    document.getElementById('uploadForm').addEventListener('submit', () => {
-        const btn = document.getElementById('uploadBtn');
-        btn.disabled = true;
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Uploading…';
-    });
-</script>
+<!-- Same-origin upload logic: posts to the relative path /upload -->
+<script src="{{ url_for('static', filename='script.js') }}"></script>
 {% endblock %}
