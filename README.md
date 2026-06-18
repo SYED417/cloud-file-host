@@ -113,7 +113,7 @@ Browser ──HTTPS──> Vercel (static HTML/JS frontend)
 ### 1. Clone and set up the backend
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/cloud-file-host.git
+git clone https://github.com/SYED417/cloud-file-host.git
 cd cloud-file-host
 
 python -m venv venv
@@ -197,7 +197,7 @@ All `/api/*` routes require the header `Authorization: Bearer <token>` (except `
 ```bash
 # On Amazon Linux EC2:
 sudo yum install -y python3 python3-venv git
-git clone https://github.com/YOUR_USERNAME/cloud-file-host.git ~/cloudapp
+git clone https://github.com/SYED417/cloud-file-host.git ~/cloudapp
 cd ~/cloudapp
 python3 -m venv venv
 source venv/bin/activate
@@ -274,7 +274,7 @@ When your EC2 IP changes after a stop/start:
 
 ## Author
 
-Built by **Syed** as a portfolio project demonstrating AWS, Flask, and cloud deployment skills.
+Built by **Syed Sulaiman** as a portfolio project demonstrating AWS, Flask, and cloud deployment skills.
 
-- GitHub: [@YOUR_USERNAME](https://github.com/YOUR_USERNAME)
-- LinkedIn: [your-linkedin](https://linkedin.com/in/your-linkedin)
+- GitHub: [@sulaimansyed417](https://github.com/sulaimansyed417)
+- Email: sulaimansyed417@gmail.com

@@ -3,7 +3,12 @@ Cloud File Host
 ---------------
 Flask app that uses Amazon S3 as a file store.
 All configuration is read from a .env file (or real environment variables).
-No database, no authentication.
+
+Author:        SYED SULAIMAN USMAN
+Last modified: April 18, 2026
+
+Deployment: backend on Render (gunicorn), frontend on Vercel, storage on AWS S3.
+Security:   no hardcoded credentials, strict CORS allow-list, token-protected API.
 """
 
 import os
@@ -102,18 +107,35 @@ login_manager.login_message = "Please log in to access that page."
 login_manager.login_message_category = "warning"
 
 # ---------------------------------------------------------------------------
-# CORS + API tokens (for the separate Vercel frontend)
+# CORS — STRICT allow-list (network security requirement)
 # ---------------------------------------------------------------------------
-# Which website(s) are allowed to call our /api/* endpoints from a browser.
-# Comma-separated list in the .env file, e.g.
-#   FRONTEND_ORIGINS=https://your-app.vercel.app,http://localhost:3000
-# "*" means "allow any site" (fine here because the API uses bearer tokens,
-# not cookies, so there is no cross-site cookie risk).
-FRONTEND_ORIGINS = os.environ.get("FRONTEND_ORIGINS", "*")
-_origins = [o.strip() for o in FRONTEND_ORIGINS.split(",")] if FRONTEND_ORIGINS != "*" else "*"
+# Only the exact origins listed in ALLOWED_ORIGINS may call /api/*.
+# Set this in Render's environment, e.g.:
+#   ALLOWED_ORIGINS=https://your-app.vercel.app
+# Multiple domains can be comma-separated. There is intentionally NO wildcard
+# fallback: if the variable is unset, the allow-list is empty and every
+# cross-origin browser request is rejected.
+_raw_origins = os.environ.get("ALLOWED_ORIGINS", "")
+ALLOWED_ORIGINS = [o.strip() for o in _raw_origins.split(",") if o.strip()]
 
-# Apply CORS only to the JSON API. The HTML UI is unaffected.
-CORS(app, resources={r"/api/*": {"origins": _origins}})
+if not ALLOWED_ORIGINS:
+    # Loud warning in logs so a misconfigured deploy is obvious — but we still
+    # fail closed (no origins allowed) rather than opening up to "*".
+    app.logger.warning(
+        "ALLOWED_ORIGINS is not set. All cross-origin API requests will be "
+        "rejected. Set ALLOWED_ORIGINS to your Vercel domain in Render."
+    )
+
+# Apply CORS only to the JSON API. The server-rendered HTML UI is same-origin
+# and unaffected. supports_credentials stays False because the API is
+# token-based (Authorization header), not cookie-based.
+CORS(
+    app,
+    resources={r"/api/*": {"origins": ALLOWED_ORIGINS}},
+    methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type"],
+    supports_credentials=False,
+)
 
 # Signs/verifies API tokens using the app secret key. Tokens are stateless:
 # they encode the user id and an expiry, so no server-side session is needed.
