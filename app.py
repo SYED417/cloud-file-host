@@ -131,6 +131,17 @@ def load_user(user_id: str):
 
 with app.app_context():
     db.create_all()
+    # Auto-create the admin on fresh deployments (Render wipes the DB on restart).
+    # Set ADMIN_EMAIL and ADMIN_PASSWORD in Render's environment variables.
+    _admin_email = os.environ.get("ADMIN_EMAIL", "").strip().lower()
+    _admin_password = os.environ.get("ADMIN_PASSWORD", "")
+    if _admin_email and _admin_password:
+        if not User.query.filter_by(email=_admin_email).first():
+            _admin = User(email=_admin_email, is_admin=True)
+            _admin.set_password(_admin_password)
+            db.session.add(_admin)
+            db.session.commit()
+            app.logger.info(f"Auto-created admin user: {_admin_email}")
 
 
 # ---------------------------------------------------------------------------
