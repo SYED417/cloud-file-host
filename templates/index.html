@@ -94,7 +94,7 @@
                     {% for file in files %}
                     <tr>
                         <td>
-                            <a href="{{ file.url }}" target="_blank"
+                            <a href="{{ url_for('download', key=file.key) }}"
                                class="text-decoration-none fw-medium text-body">
                                 <i class="bi bi-file-earmark me-2 text-secondary"></i>{{ file.name }}
                             </a>
@@ -103,10 +103,8 @@
                         <td class="text-secondary">{{ file.last_modified }}</td>
                         <td class="text-end">
                             <div class="d-inline-flex gap-2">
-                                <!-- Download -->
-                                <a href="{{ file.url }}"
-                                   download
-                                   target="_blank"
+                                <!-- Download via short-lived pre-signed URL -->
+                                <a href="{{ url_for('download', key=file.key) }}"
                                    class="btn btn-sm btn-outline-primary">
                                     <i class="bi bi-download me-1"></i>Download
                                 </a>

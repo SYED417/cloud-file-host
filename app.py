@@ -182,10 +182,6 @@ def human_size(num_bytes: int) -> str:
         size /= 1024
 
 
-def public_url(key: str) -> str:
-    return f"https://{S3_BUCKET}.s3.{AWS_REGION}.amazonaws.com/{key}"
-
-
 def get_files() -> list:
     response = s3.list_objects_v2(Bucket=S3_BUCKET)
     files = []
@@ -198,7 +194,6 @@ def get_files() -> list:
                 "name": display,
                 "size": human_size(obj["Size"]),
                 "last_modified": obj["LastModified"].strftime("%Y-%m-%d %H:%M"),
-                "url": public_url(key),
             }
         )
     files.sort(key=lambda f: f["last_modified"], reverse=True)
@@ -271,6 +266,26 @@ def upload():
         return jsonify(message=f"'{file.filename}' uploaded successfully."), 201
     except (ClientError, BotoCoreError) as exc:
         return jsonify(error=f"Upload failed: {exc}"), 502
+
+
+@app.route("/download/<path:key>")
+@login_required
+def download(key):
+    """
+    Generate a short-lived pre-signed URL for the requested object and redirect
+    the browser to it. The bucket stays PRIVATE - S3 grants temporary access
+    only because the URL is signed with our credentials and expires in 60s.
+    """
+    try:
+        url = s3.generate_presigned_url(
+            "get_object",
+            Params={"Bucket": S3_BUCKET, "Key": key},
+            ExpiresIn=60,  # link is valid for 60 seconds, then dies
+        )
+        return redirect(url)
+    except (ClientError, BotoCoreError) as exc:
+        flash(f"Could not generate download link: {exc}", "danger")
+        return redirect(url_for("index"))
 
 
 @app.route("/delete/<path:key>", methods=["POST"])
