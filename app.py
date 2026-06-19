@@ -23,6 +23,7 @@ from botocore.exceptions import BotoCoreError, ClientError
 from dotenv import load_dotenv
 from flask import (
     Flask,
+    Response,
     flash,
     jsonify,
     redirect,
@@ -272,20 +273,36 @@ def upload():
 @login_required
 def download(key):
     """
-    Generate a short-lived pre-signed URL for the requested object and redirect
-    the browser to it. The bucket stays PRIVATE - S3 grants temporary access
-    only because the URL is signed with our credentials and expires in 60s.
+    Stream the requested object straight from S3 through Flask to the browser.
+
+    We deliberately do NOT redirect to a pre-signed URL here. The bucket stays
+    PRIVATE and the file is fetched with a live, server-side signed request
+    (the same mechanism that upload/list already use successfully), then piped
+    to the client. Access is gated by @login_required, so anonymous users
+    cannot download anything.
     """
     try:
-        url = s3.generate_presigned_url(
-            "get_object",
-            Params={"Bucket": S3_BUCKET, "Key": key},
-            ExpiresIn=60,  # link is valid for 60 seconds, then dies
-        )
-        return redirect(url)
+        obj = s3.get_object(Bucket=S3_BUCKET, Key=key)
     except (ClientError, BotoCoreError) as exc:
-        flash(f"Could not generate download link: {exc}", "danger")
+        flash(f"Could not download file: {exc}", "danger")
         return redirect(url_for("index"))
+
+    # Friendly filename for the browser (strip the uuid prefix we added on upload).
+    display_name = key.split("_", 1)[1] if "_" in key else key
+    content_type = obj.get("ContentType", "application/octet-stream")
+
+    def stream():
+        # Read in chunks so large files don't load fully into memory.
+        for chunk in obj["Body"].iter_chunks(chunk_size=8192):
+            yield chunk
+
+    return Response(
+        stream(),
+        mimetype=content_type,
+        headers={
+            "Content-Disposition": f'attachment; filename="{display_name}"',
+        },
+    )
 
 
 @app.route("/delete/<path:key>", methods=["POST"])
